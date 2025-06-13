@@ -5,4 +5,34 @@ flows:
       - collect: recipient
       - collect: amount
         description: the number of US dollars to send
-      - action: utter_transfer_complete
+      - action: action_check_sufficient_funds
+        next:
+          - if: slots.has_sufficient_funds == false
+            then:
+              - action: utter_transfer_failed
+                next: END
+          - else:
+              - action: utter_transfer_complete
+                next: END
+  say_hello:
+    description: A simple flow that greets the user
+    steps:
+      - action: utter_greet
+      - link: collect_infor
+  collect_infor:
+    description: Collect user information
+    steps:  
+      - collect: name
+      - collect: age
+        next:
+          - if: slots.age < 18
+            then:
+              - action: utter_age_under
+                next: END
+          - else: 
+              - action: utter_greet_with_information
+                next: END
+  check_db:
+    description: test connection
+    steps:
+      - action: action_query_user

@@ -10,16 +10,41 @@ slots:
     mappings:
       - type: from_llm
 
+  name:
+    type: text
+    mappings:
+      - type: from_llm
+  age: 
+    type: float
+    influence_conversation: true
+    mappings: 
+      - type: from_llm
+  has_sufficient_funds:
+    type: bool
+    influence_conversation: true
+
+actions:
+  - action_query_user
+  - action_check_sufficient_funds
+
 responses:
   utter_ask_recipient:
     - text: "Who would you like to send money to?"
 
   utter_ask_amount:
     - text: "How much money would you like to send?"
-
+  utter_age_under:
+    - text: "You are not old enough"
+  utter_ask_name:
+    - text: "What is your name?"
+  utter_ask_age:
+    - text: "How old are you"
+  utter_greet_with_information:
+    - text: "Hi {name} age {age}"
   utter_transfer_complete:
     - text: "All done. {amount} has been sent to {recipient}."
-
+  utter_transfer_failed:
+    - text: "Giao dịch thất bại: số dư không đủ."
   utter_free_chitchat_response:
     - text: "placeholder"
       metadata:
@@ -33,3 +58,5 @@ responses:
           {{history}}
           {{current_input}}
           Suggested AI Response:
+  utter_greet:
+    - text: "Hi, How can i help you today?"
