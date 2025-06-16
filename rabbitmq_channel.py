@@ -1,43 +1,40 @@
-from rasa.core.channels.channel import InputChannel, UserMessage, OutputChannel
-from rasa.utils.endpoints import EndpointConfig
-from sanic import Blueprint, response
-import aio_pika
-import asyncio
+# watch_events.py
+import pika
 import json
-import logging
+import sys
 
-logger = logging.getLogger(__name__)
+def callback(ch, method, properties, body):
+    event = json.loads(body)
+    print(f"📨 Event: {event.get('event', 'unknown')}")
+    if event.get('event') == 'user':
+        print(f"   👤 User said: {event.get('text', '')}")
+    elif event.get('event') == 'bot':
+        print(f"   🤖 Bot replied: {event.get('text', '')}")
+    print(f"   📝 Full event: {json.dumps(event, indent=2)}")
+    print("-" * 50)
 
-class RabbitMQInput(InputChannel):
-    @classmethod
-    def name(cls):
-        return "rabbitmq"
+# Kết nối RabbitMQ
+connection = pika.BlockingConnection(
+    pika.ConnectionParameters('localhost')
+)
+channel = connection.channel()
 
-    def __init__(self, queue_name="rasa_queue", host="localhost"):
-        self.queue_name = queue_name
-        self.host = host
+# Tạo queue nếu chưa có
+channel.queue_declare(queue='rasa_core_events', durable=True)
 
-    async def _consume(self, on_new_message):
-        connection = await aio_pika.connect_robust(host=self.host)
-        channel = await connection.channel()
-        queue = await channel.declare_queue(self.queue_name)
+print("🔄 Đang chờ events từ Rasa...")
+print("Để thoát, nhấn CTRL+C")
 
-        async with queue.iterator() as queue_iter:
-            async for message in queue_iter:
-                async with message.process():
-                    data = json.loads(message.body.decode())
-                    sender = data.get("sender", "user")
-                    text = data.get("message", "")
+channel.basic_consume(
+    queue='rasa_core_events',
+    on_message_callback=callback,
+    auto_ack=True
+)
 
-                    await on_new_message(
-                        UserMessage(text, None, sender_id=sender)
-                    )
-
-    def blueprint(self, on_new_message):
-        bp = Blueprint("rabbitmq_channel", __name__)
-
-        @bp.listener("after_server_start")
-        async def setup(_app, _loop):
-            _loop.create_task(self._consume(on_new_message))
-
-        return bp
+try:
+    channel.start_consuming()
+except KeyboardInterrupt:
+    print("\n👋 Đang thoát...")
+    channel.stop_consuming()
+    connection.close()
+    sys.exit(0)

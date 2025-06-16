@@ -35,11 +35,13 @@ action_endpoint:
 # Event broker which all conversation events should be streamed to.
 # https://rasa.com/docs/rasa-pro/production/event-brokers
 
-#event_broker:
-#  url: localhost
-#  username: username
-#  password: password
-#  queue: queue
+# endpoints.yml
+event_broker:
+  type: "pika"
+  url: "localhost"   # Không có "amqp://" hoặc cổng
+  username: "guest"
+  password: "guest"
+  queue: "rasa_events"
 
 # Allow rephrasing of responses using a Rasa-hosted model
 nlg:
