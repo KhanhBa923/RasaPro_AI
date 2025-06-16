@@ -3,14 +3,17 @@ flows:
     description: Help users send money to friends and family.
     steps:
       - collect: recipient
-      - collect: amount
+      - id: ask_amount
+        collect: amount
         description: the number of US dollars to send
       - action: action_check_sufficient_funds
         next:
-          - if: slots.has_sufficient_funds == false
+          - if: not slots.has_sufficient_funds
             then:
               - action: utter_transfer_failed
-                next: END
+              - set_slots:
+                  - amount: null
+                next: ask_amount
           - else:
               - action: utter_transfer_complete
                 next: END
@@ -23,6 +26,11 @@ flows:
     description: Collect user information
     steps:  
       - collect: name
+      - collect: phone_number
+        description: "User's phone number in (xxx) xxx-xxxx format"
+        rejections:
+          - if: not ( slots.phone_number matches "^\([0-9]{3}\) [0-9]{3}-[0-9]{4}$" )
+            utter: utter_invalid_phone_number
       - collect: age
         next:
           - if: slots.age < 18
@@ -36,3 +44,25 @@ flows:
     description: test connection
     steps:
       - action: action_query_user
+
+  pattern_correction:
+    description: Confirm a previous correction of a slot value.
+    steps:
+      - noop: true
+        next:
+          - if: context.is_reset_only
+            then:
+              - action: action_correct_flow_slot
+                next: END
+          - else: confirm_first
+      - id: confirm_first
+        collect: confirm_slot_correction
+        next:
+          - if: not slots.confirm_slot_correction
+            then:
+              - action: utter_not_corrected_previous_input
+                next: END
+          - else:
+              - action: action_correct_flow_slot
+              - action: utter_corrected_previous_input
+                next: END

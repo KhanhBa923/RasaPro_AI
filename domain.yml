@@ -9,7 +9,15 @@ slots:
     type: float
     mappings:
       - type: from_llm
-
+  phone_number:
+    type: text
+    mappings:
+      - type: from_llm
+    # validation:
+    #   rejections:
+    #     - if: not (slots.phone_number matches "^\([0-9]{3}\) [0-9]{3}-[0-9]{4}$")
+    #       utter: utter_invalid_phone_number
+    #   refill_utter: "utter_refill_phone_number"
   name:
     type: text
     mappings:
@@ -22,10 +30,13 @@ slots:
   has_sufficient_funds:
     type: bool
     influence_conversation: true
+  confirm_slot_correction:
+    type: bool
 
 actions:
   - action_query_user
   - action_check_sufficient_funds
+  - action_restart
 
 responses:
   utter_ask_recipient:
@@ -45,13 +56,34 @@ responses:
     - text: "All done. {amount} has been sent to {recipient}."
   utter_transfer_failed:
     - text: "Giao dịch thất bại: số dư không đủ."
+  utter_ask_phone_number:
+    - text: "What is your phone number"
+  utter_refill_phone_number:
+    - text: "Enter your phone_number again"
+  utter_invalid_phone_number:
+    - text: "Wrong phone number format"
+  utter_ask_confirm_slot_correction:
+    - text: "Do you want to update the {{ context.corrected_slots.keys()|join(', ') }}?"
+      buttons:
+        - payload: "yes"
+          title: "Yes"
+        - payload: "no"
+          title: "No, please keep the previous information"
+      metadata:
+        rephrase: True
+        template: jinja
+  utter_not_corrected_previous_input:
+    - text: "Ok, I did not correct the previous input."
+      metadata:
+        rephrase: True
+  
   utter_free_chitchat_response:
     - text: "placeholder"
       metadata:
         rephrase: True
         rephrase_prompt: |
           The following is a conversation with an AI assistant built with Rasa.
-          The assistant can help the user transfer money.
+          The assistant can help the user with stock information.
           The assistant is helpful, creative, clever, and very friendly.
           The user is making small talk, and the assistant should respond, keeping things light.
           Context / previous conversation with the user:

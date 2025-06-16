@@ -70,3 +70,15 @@ class ActionQueryStocks(Action):
             dispatcher.utter_message(text=f"Lỗi kết nối: {str(e)}")
 
         return []
+    
+class ActionRestart(Action):
+
+  def name(self) -> Text:
+      return "action_restart"
+
+  async def run(
+      self, dispatcher, tracker: Tracker, domain: Dict[Text, Any]
+  ) -> List[Dict[Text, Any]]:
+
+      dispatcher.utter_message(text="Hi, How can i help you")
+      return []
