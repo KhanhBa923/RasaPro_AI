@@ -66,3 +66,9 @@ flows:
               - action: action_correct_flow_slot
               - action: utter_corrected_previous_input
                 next: END
+                
+  pattern_search:
+    description: handle a knowledge-based question or request
+    name: pattern search
+    steps:
+      - action: action_trigger_search

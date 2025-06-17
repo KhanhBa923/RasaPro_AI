@@ -13,11 +13,6 @@ slots:
     type: text
     mappings:
       - type: from_llm
-    # validation:
-    #   rejections:
-    #     - if: not (slots.phone_number matches "^\([0-9]{3}\) [0-9]{3}-[0-9]{4}$")
-    #       utter: utter_invalid_phone_number
-    #   refill_utter: "utter_refill_phone_number"
   name:
     type: text
     mappings:
