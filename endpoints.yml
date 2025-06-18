@@ -55,11 +55,19 @@ model_groups:
       - provider: rasa
         model: rasa/cmd_gen_codellama_13b_calm_demo
         api_base: "https://tutorial-llm.rasa.ai"
-  - id: enterprise_search_generation
+  - id: azure_llm
     models:
-      - provider: "openai"
-        model: "gpt-4o"
-  - id: enterprise_search_embeddings
+      - provider: azure
+        deployment:  o4-mini
+        api_base: https://khanh-mc1ct0o0-eastus2.cognitiveservices.azure.com/
+        api_version: "2024-12-01-preview"
+        api_key: ${AZURE_API_KEY}
+        timeout: 7
+  - id: azure_embeddings
     models:
-      - provider: "openai"
-        model: "text-embedding-ada-002"
+      - provider: azure
+        deployment: text-embedding-3-large
+        api_base: https://khanh-mc1ct0o0-eastus2.cognitiveservices.azure.com/
+        api_version: "2024-12-01-preview"
+        api_key: ${AZURE_API_KEY}
+        timeout: 7
