@@ -123,7 +123,8 @@ class StockInformationRetrieval(InformationRetrieval):
         # Tìm các file txt liên quan đến mã cổ phiếu
         all_txt_files = glob.glob(f"{self.docs_path}/*.txt")
 
-        negative_indicators = ["tin xấu", "lỗ", "giảm", "âm", "rủi ro", "bad news", "loss", "drop", "risk", "negative"]
+        #negative_indicators = ["tin xấu", "lỗ", "giảm", "âm", "rủi ro", "bad news", "loss", "drop", "risk", "negative"]
+        negative_indicators = ["drop"]
         has_negative_news = False
 
         content = ""
@@ -147,7 +148,7 @@ class StockInformationRetrieval(InformationRetrieval):
         elif has_negative_news:
             result_text = (
                 f"The stock {symbol} shows signs of negative performance. "
-                f"You should be cautious when investing.\n\nExample info:\n{evidence}"
+                f"You should be cautious when investing.\n\nExample info:\n{content.strip()[:500]}"
             )
         else:
             result_text = (
