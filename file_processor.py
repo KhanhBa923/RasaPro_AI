@@ -4,8 +4,13 @@ import PyPDF2
 from docx import Document
 import pandas as pd
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_openai import OpenAIEmbeddings  # ✅ dùng phiên bản mới
+from langchain_openai import AzureOpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
+from dotenv import load_dotenv
+
+
+load_dotenv()
+
 
 def extract_text_from_word(docx_path):
     doc = Document(docx_path)
@@ -97,7 +102,12 @@ def process_documents_to_vector_store():
         print("⚠️ Không có đoạn văn bản nào được tạo.")
         return
 
-    embeddings = OpenAIEmbeddings()
+    embeddings = AzureOpenAIEmbeddings(
+    azure_deployment=os.getenv("AZURE_OPENAI_EMBEDDING_DEPLOYMENT"),
+    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+    api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+    api_version=os.getenv("AZURE_OPENAI_API_VERSION")
+    )
     vector_store = FAISS.from_texts(chunks, embeddings, metadatas=metadatas)
     vector_store.save_local("./vector_store")
 

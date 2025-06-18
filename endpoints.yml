@@ -62,7 +62,7 @@ model_groups:
         api_base: https://khanh-mc1ct0o0-eastus2.cognitiveservices.azure.com/
         api_version: "2024-12-01-preview"
         api_key: ${AZURE_API_KEY}
-        timeout: 7
+        timeout: 30
   - id: azure_embeddings
     models:
       - provider: azure
@@ -70,4 +70,4 @@ model_groups:
         api_base: https://khanh-mc1ct0o0-eastus2.cognitiveservices.azure.com/
         api_version: "2024-12-01-preview"
         api_key: ${AZURE_API_KEY}
-        timeout: 7
+        timeout: 30
