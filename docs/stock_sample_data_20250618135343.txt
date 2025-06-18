@@ -1,0 +1,8 @@
+
+--- Sheet: Sheet1 ---
+Stock Symbol | Company Name | Sector | Market Cap (Billion USD) | Stock Price (USD) | PE Ratio
+AAPL | Apple Inc. | Technology | 2800 | 185.0 | 29.5
+GOOGL | Alphabet Inc. | Technology | 1700 | 130.5 | 24.8
+MSFT | Microsoft Corp. | Technology | 2500 | 320.3 | 31.1
+AMZN | Amazon.com Inc. | Consumer Discretionary | 1600 | 125.8 | 42.6
+TSLA | Tesla Inc. | Consumer Discretionary | 900 | 210.2 | 75.2

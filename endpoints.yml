@@ -71,3 +71,6 @@ model_groups:
         api_version: "2024-12-01-preview"
         api_key: ${AZURE_API_KEY}
         timeout: 30
+vector_store:
+  type: custom
+  docs_path: "./docs"

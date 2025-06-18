@@ -23,5 +23,6 @@ policies:
     embeddings:
       model_group: azure_embeddings
     vector_store:
-      type: "faiss"
-      source: "./docs"
+      # type: "faiss"
+      # source: "./docs"
+      type: "custom_stock_retrieval.StockInformationRetrieval"

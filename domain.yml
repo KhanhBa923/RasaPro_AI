@@ -87,3 +87,7 @@ responses:
           Suggested AI Response:
   utter_greet:
     - text: "Hi, How can i help you today?"
+  utter_can_do_something_else:
+    - text: "Is there anything else I can assist you with?"
+    - text: "What else can I help you with today?"
+    - text: "Do you need help with anything else?"
